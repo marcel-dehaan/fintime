@@ -68,7 +68,7 @@ fig = plot(
 plt.show()
 
 ```
-![simple plot](images/single_plot.png)
+![simple plot](https://raw.githubusercontent.com/marcel-dehaan/fintime/main/images/single_plot.png)
 
 > **Note**: Panels act as the canvas for either one Axes or two twinx Axes. Visually stacked vertically, a list of panels shares the x-axis. An artist is an element that can be drawn within a panel.
 
@@ -114,7 +114,7 @@ plt.show()
 
 ```
 
-![multi plot](images/multi_plot.png)
+![multi plot](https://raw.githubusercontent.com/marcel-dehaan/fintime/main/images/multi_plot.png)
 
 ### Standalone use of artists
 
@@ -135,7 +135,7 @@ cs_artist.draw(axes)
 plt.show()
 
 ```
-![standalone plot](images/standalone_plot.png)
+![standalone plot](https://raw.githubusercontent.com/marcel-dehaan/fintime/main/images/standalone_plot.png)
 
 ## Configuration
 Fintime provides granular control over configurations through its 'config' argument, available in the plot function, subplot, panel, and artists classes. These configurations are propagated downward to sub-components, including updates along each branch.
