@@ -1,0 +1,36 @@
+[tool.poetry]
+name = "fintime"
+version = "0.1.0"
+description = "Financial Time Series Plotting Libarary"
+license = "Apache-2.0"
+authors = ["Marcel de Haan <mdehaan35@gmail.com>"]
+readme = "README.md"
+homepage = "https://github.com/marcel-dehaan/fintime"
+packages = [{include = "fintime"}]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development",
+]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+PyYAML = "*"
+matplotlib = "3.0"
+nptyping = "*"
+python-dateutil = "*"
+numpy = "*"
+fieldconfig = "^0.1.3"
+
+[tool.poetry.dev-dependencies]
+black = "*"
+absl-py = "*"
+
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+
+[black]
+line-length = 79
