@@ -1,4 +1,3 @@
-from typing import Any
 from fieldconfig import Config, Field
 from dateutil import tz
 import matplotlib.colors as mcolors
@@ -27,11 +26,9 @@ def get_config():
     cfg.timezone = tz.gettz("America/New_York")
     cfg.figure.layout = "tight"
     cfg.figure.facecolor = "#f9f9f9"
-
     cfg.figure.title.fontsize = 22
     cfg.figure.title.fontweight = "bold"
     cfg.figure.title.y = Field(0.98, validator=is_between_zero_and_one)
-
     cfg.panel.facecolor = "white"
     cfg.xaxis.tick.nudge = 0
 
