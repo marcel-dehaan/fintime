@@ -1,5 +1,5 @@
-# Fintime
-Fintime is a financial time series plotting library built on Matplotlib. 
+# FinTime
+FinTime is a financial time series plotting library built on Matplotlib. 
 
 **Features include:** 
 - Visual elements as standalone objects (Artists).
@@ -30,7 +30,7 @@ pip install fintime
 
 <a id="data"></a>
 ### Data
-Fintime expects data to be structured as a flat mapping, such as a dictionary, containing NumPy arrays. The example below demonstrates the generation of mock OHLCV data with intervals of 1, 10, 30, and 300 seconds. This data will be used in the following examples.
+FinTime expects data to be structured as a flat mapping, such as a dictionary, containing NumPy arrays. The example below demonstrates the generation of mock OHLCV data with intervals of 1, 10, 30, and 300 seconds. This data will be used in the following examples.
 
 ```python
 from fintime.mock.data import generate_random_trade_ticks
@@ -138,9 +138,9 @@ plt.show()
 
 <a id="configuration"></a>
 ## Configuration
-Fintime provides granular control over configurations through its `config` argument, available in the plot function, subplot, panel, and artists classes. These configurations are propagated downward to sub-components, including updates along each branch. 
+FinTime provides granular control over configurations through its `config` argument, available in the plot function, subplot, panel, and artists classes. These configurations are propagated downward to sub-components, including updates along each branch. 
 
-Fintime uses [FieldConfig](https://pypi.org/project/fieldconfig/) for configurations, and, as demonstrated in the [Multi-plot](#multi-plot) example it supports updates by passing a new Config object or a dictionary, whether flat or nested. If you're interested in creating your own configurations, please refer to the documentation.
+FinTime uses [FieldConfig](https://pypi.org/project/fieldconfig/) for configurations, and, as demonstrated in the [Multi-plot](#multi-plot) example it supports updates by passing a new Config object or a dictionary, whether flat or nested. If you're interested in creating your own configurations, please refer to the documentation.
 
 The available configuration options can be displayed using:
 ```python
