@@ -1,27 +1,27 @@
 # Fintime
-Financial time series plotting libarary built on Matplotlib. 
+Fintime is a financial time series plotting library built on Matplotlib. 
 
+**Features include:** 
 - Visual elements as standalone objects (Artists).
 - Composite structures (Grid, Subplots, Panels) organise multiple plots within a figure.
 - Branched propagation of data and configurations to sub-components, enabling overrides at any level.
 - Dynamic sizing and spacing of components.
 
-## Table of content
+## Table of Contents
 
 - [Installation](#installation)
-- [Examples](#examples)
+- [Usage](#examples)
   - [Data](#data)
-  - [Single plot](#single-plot)
-  - [Multi Plot](#multi-plot)
-  - [Standalone use of artists](#standalone-use-of-artists)
-
+  - [Panels Plot](#panels-plot)
+  - [Subplots Plot](#subplots-plot)
+  - [Standalone Use of Artists](#standalone-use-of-artists)
 - [Configuration](#configuration)
-- [Upcoming features](#upcoming-features)
+- [Upcoming Features](#upcoming-features)
 
 
 <a id="installation"></a>
 ## Installation
-```+
+```python
 pip install fintime
 ```
 
@@ -30,9 +30,9 @@ pip install fintime
 
 <a id="data"></a>
 ### Data
-Fintime expects data to be organized as a flat mapping, such as a dictionary, containing NumPy arrays. The example below demonstrates the generation of mock OHLCV data with intervals of 1, 10, 30, and 300 seconds. This data will be used in the following examples.
+Fintime expects data to be structured as a flat mapping, such as a dictionary, containing NumPy arrays. The example below demonstrates the generation of mock OHLCV data with intervals of 1, 10, 30, and 300 seconds. This data will be used in the following examples.
 
-```
+```python
 from fintime.mock.data import generate_random_trade_ticks
 from fintime.mock.data import to_timebar
 
@@ -52,30 +52,30 @@ for feat, array in datas["10s"].items():
 # --> vol    array([2941])
 ```
 
-<a id="single-plot"></a>
-### Single plot
-Let's proceed and plot candlesticks and volume bars with 10s span. 
-```
+<a id="panels-plot"></a>
+### Panels Plot
+Let's proceed and plot candlesticks and volume bars with a 10-second span.
+```python
 from matplotlib.pylab import plt
 from fintime.plot import plot, Panel
 from fintime.artists import CandleStick, Volume
 
 fig = plot(
     specs=[Panel(artists=[CandleStick()]), Panel(artists=[Volume()])],
-    data=datas['10s'],
-    title="single plot",
+    data=datas["10s"],
+    title="Panels Plot",
 )
 plt.show()
-
 ```
-![simple plot](https://raw.githubusercontent.com/marcel-dehaan/fintime/main/images/single_plot.png)
+![panels plot](https://raw.githubusercontent.com/marcel-dehaan/fintime/main/images/panels_plot.png)
 
 > **Note**: Panels act as the canvas for either one Axes or two twinx Axes. Visually stacked vertically, a list of panels shares the x-axis. An artist is an element that can be drawn within a panel.
 
+<a id="subplots-plot"></a>
+### Subplots Plot
+Displaying multiple groups of panels within a single figure is achieved by passing a list of Subplots (rather than Panels) to the plot function. In the following example, we will draw candlestick and volume bars with spans of 1, 30 and 300 seconds while overriding some configurations.  
 
-### Multi Plot
-Displaying multiple plots within a single figure is achieved by passing a list of Subplots (rather than Panels) to the plot function. In the following example, we will plot time bars with spans of 1, 30, and 300 seconds and override some configurations. 
-```
+```python
 from fieldconfig import Config
 from fintime.plot import Subplot
 
@@ -109,17 +109,17 @@ subplots = [
     ),
 ]
 
-fig = plot(subplots, title="multi plot")
+fig = plot(subplots, title="Subplots Plot")
 plt.show()
-
 ```
 
-![multi plot](https://raw.githubusercontent.com/marcel-dehaan/fintime/main/images/multi_plot.png)
+![subplots plot](https://raw.githubusercontent.com/marcel-dehaan/fintime/main/images/subplots_plot.png)
 
-### Standalone use of artists
+<a id="standalone-use-of-artists"></a>
+### Standalone Use of Artists
 
 You also have the option to have Artists draw on your own Axes.
-```
+```python
 import matplotlib.pyplot as plt
 from fintime.artists import CandleStick
 from fintime.config import get_config
@@ -133,17 +133,17 @@ axes.set_ylim(min(data["low"]), max(data["high"]))
 cs_artist = CandleStick(data=data, config=get_config())
 cs_artist.draw(axes)
 plt.show()
-
 ```
 ![standalone plot](https://raw.githubusercontent.com/marcel-dehaan/fintime/main/images/standalone_plot.png)
 
+<a id="configuration"></a>
 ## Configuration
-Fintime provides granular control over configurations through its 'config' argument, available in the plot function, subplot, panel, and artists classes. These configurations are propagated downward to sub-components, including updates along each branch.
+Fintime provides granular control over configurations through its `config` argument, available in the plot function, subplot, panel, and artists classes. These configurations are propagated downward to sub-components, including updates along each branch. 
 
-Fintime uses FieldConfig for configurations, and, as demonstrated in the [Multi Plot](#multi-plot) example it supports updates by passing a new Config object or a dictionary, whether flat or nested.
+Fintime uses [FieldConfig](https://pypi.org/project/fieldconfig/) for configurations, and, as demonstrated in the [Multi-plot](#multi-plot) example it supports updates by passing a new Config object or a dictionary, whether flat or nested. If you're interested in creating your own configurations, please refer to the documentation.
 
 The available configuration options can be displayed using:
-```
+```python
 from fintime.config import get_config
 
 cfg = get_config()
@@ -164,7 +164,7 @@ for k, v in cfg.to_flat_dict().items():
 ```
 
 <a id="upcoming-features"></a>
-## Upcoming features
+## Upcoming Features
 - Axes labels and legend
 - Custom y-tick formatting
 - More artists: 
