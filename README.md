@@ -20,6 +20,7 @@ FinTime is a financial time series plotting library built on Matplotlib.
   - [Standalone Use of Artists](#standalone-use-of-artists)
 - [Configuration](#configuration)
 - [Upcoming Features](#upcoming-features)
+- [Note of Warning](#note-of-warning)
 
 
 <a id="installation"></a>
@@ -257,5 +258,7 @@ for k, v in cfg.to_flat_dict().items():
   - Diverging bars
   - Trading session shading
   - and more 
-
-
+  
+<a id="note-of-warning"></a>
+## Note of Warning
+FinTime is currently in its early alpha development stage, and interfaces are subject to change without prior notice, including potential modifications that may not be backward compatible. Please be aware of this ongoing development state."
