@@ -2,6 +2,7 @@ import warnings
 from typing import Any, Mapping, Optional
 
 import matplotlib.pyplot as plt
+from matplotlib.figure import Figure
 
 from fintime.config import get_config
 from fintime.types import Array1D, SizeSpec
@@ -16,7 +17,7 @@ def plot(
     title: Optional[str] = None,
     save: Optional["str"] = None,
     rtn: bool = True,
-):
+) -> Optional[Figure]:
     """
     Create a plot using specified subplots or panels.
 
@@ -53,9 +54,8 @@ def plot(
     fig_width = gridspec.get_width()
     fig_height = gridspec.get_height()
 
-    print(fig_width, fig_height)
-
     gridspec.propagate_size(width=fig_width, height=fig_height)
+    gridspec.validate()
 
     fig = plt.figure(
         figsize=(fig_width, fig_height),
@@ -65,8 +65,9 @@ def plot(
     if title:
         fig.suptitle(
             title,
-            fontsize=config.figure.title.fontsize,
-            fontweight=config.figure.title.fontweight,
+            fontfamily=config.figure.title.font.family,
+            fontsize=config.figure.title.font.size,
+            fontweight=config.figure.title.font.weight,
             y=config.figure.title.y,
         )
     gridspec.draw(canvas=fig)

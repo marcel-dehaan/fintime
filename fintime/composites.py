@@ -1,12 +1,10 @@
-from copy import copy
 from typing import Any, Mapping
 
 import numpy as np
-
+from matplotlib.axes import Axes
 from matplotlib.dates import date2num
 from matplotlib.figure import Figure
 from matplotlib.gridspec import GridSpec, SubplotSpec, GridSpecFromSubplotSpec
-from matplotlib.pyplot import Axes
 
 from fintime.abc import Composite, Artist, XLim, YLim
 from fintime.config import Config
@@ -27,18 +25,11 @@ class Panel(Composite, XLim, YLim):
             width=size[0],
             height=size[1],
             op_widths=max,
-            op_heights=sum,
+            op_heights=max,
         )
         self._artists = artists
         self._cfg = Config(config)
         self._data = data
-
-    def draw(self, axes: Axes):
-        axes.set_ylim(self.get_ymin(), self.get_ymax())
-        axes.set_facecolor(self._cfg.panel.facecolor)
-
-        for artist in self._artists:
-            artist.draw(axes)
 
     def get_xmin(self) -> float:
         return min([comp.get_xmin() for comp in self._components])
@@ -48,13 +39,64 @@ class Panel(Composite, XLim, YLim):
 
     def get_ymin(self, twinx: bool = False) -> float:
         return min(
-            [comp.get_ymin() for comp in self._components if comp.is_twinx() == twinx]
+            [
+                artist.get_ymin()
+                for artist in self._components
+                if artist.is_twinx() == twinx
+            ]
         )
 
+    def get_ylabel(self, twinx: bool = False):
+        labels = [
+            artist.get_ylabel()
+            for artist in self._components
+            if artist.is_twinx() == twinx
+        ]
+        labels = [label for label in labels if label]
+        if not labels:
+            return None
+        if not all(item == labels[0] for item in labels):
+            raise ValueError(
+                f"Panel encountered non-identical ylabels: {labels}. "
+            )
+        return labels[0]
+
     def get_ymax(self, twinx: bool = False) -> float:
-        return min(
-            [comp.get_ymax() for comp in self._components if comp.is_twinx() == twinx]
+        return max(
+            [
+                comp.get_ymax()
+                for comp in self._components
+                if comp.is_twinx() == twinx
+            ]
         )
+
+    def draw(self, axes: Axes) -> None:
+
+        axes.set_facecolor(self._cfg.panel.facecolor)
+        all_axes = {False: axes}
+        if any([artist.is_twinx() for artist in self._artists]):
+            all_axes[True] = axes.twinx()
+
+        else:
+            axes.yaxis.set_tick_params(right=True, labelright=True)
+
+        for twinx, axes in all_axes.items():
+            all_axes[twinx].set_ylim(
+                self.get_ymin(twinx), self.get_ymax(twinx)
+            )
+            all_axes[twinx].set_ylabel(
+                self.get_ylabel(twinx),
+                fontdict={
+                    "family": self._cfg.ylabel.font.family,
+                    "color": self._cfg.ylabel.font.color,
+                    "weight": self._cfg.ylabel.font.weight,
+                    "size": self._cfg.ylabel.font.size,
+                },
+                labelpad=self._cfg.ylabel.pad,
+            )
+
+        for artist in self._artists:
+            artist.draw(all_axes[artist.is_twinx()])
 
 
 class Subplot(Composite, XLim):
@@ -87,7 +129,7 @@ class Subplot(Composite, XLim):
     def get_ymax(self) -> float:
         return max([comp.get_ymax() for comp in self._components])
 
-    def draw(self, canvas: Figure | SubplotSpec):
+    def draw(self, canvas: Figure | SubplotSpec) -> None:
 
         if isinstance(canvas, SubplotSpec):
 
@@ -136,9 +178,12 @@ class Subplot(Composite, XLim):
             axes.set_xlim(xmin, xmax)
             axes.grid(linestyle="-", alpha=0.5, zorder=10)
             axes.tick_params(
-                which="both", labelsize=12, top=labeltop, bottom=labelbottom, right=True
+                which="both",
+                labelsize=12,
+                top=labeltop,
+                bottom=labelbottom,
+                right=True,
             )
-            axes.yaxis.set_tick_params(right=True, labelright=True)
             axes.xaxis.set_tick_params(
                 labeltop=labeltop, labelbottom=labelbottom, direction="out"
             )
@@ -170,7 +215,7 @@ class Grid(Composite):
         self._data = data
         self._cfg = config
 
-    def draw(self, canvas):
+    def draw(self, canvas) -> None:
         # TODO: improve dynamic hspace logic
         gridspec = GridSpec(
             nrows=self.nrows,

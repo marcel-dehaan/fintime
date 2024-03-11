@@ -114,5 +114,7 @@ def get_major_locator_and_formatter(
     nudge: int = 0,
 ):
     get_locator_and_formatter = make_get_locator_and_formatter(tz=tz)
-    secs_per_inch = (x_max - x_min).astype("timedelta64[s]").astype(np.int64) / width
+    secs_per_inch = (x_max - x_min).astype("timedelta64[s]").astype(
+        np.int64
+    ) / width
     return get_locator_and_formatter(secs_per_inch=secs_per_inch, nudge=nudge)

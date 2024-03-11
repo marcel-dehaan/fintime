@@ -1,12 +1,12 @@
-from typing import Mapping
-from typing import Any
+from typing import Any, Mapping, Optional
 
+import numpy as np
 from matplotlib.axes import Axes
 from matplotlib.collections import LineCollection, PolyCollection
 from matplotlib.dates import date2num
-import numpy as np
-from fintime.types import Ohlc
 
+from fintime.types import Ohlc
+from fintime.validation import validate
 from fintime.artists.utils import (
     get_rectangle_vertices,
     get_horizontal_line_segments,
@@ -18,16 +18,27 @@ from fintime.abc import Artist
 
 class CandleStick(Artist):
     def __init__(
-        self, data: Ohlc = {}, twinx: bool = False, config: Mapping[str, Any] = {}
+        self,
+        data: Optional[Ohlc] = None,
+        config: Optional[Mapping[str, Any]] = None,
+        twinx: bool = False,
+        *,
+        ylabel: Optional[str] = None,
     ):
-        self._data = data
-        self._twinx = twinx
-        self._cfg = config
+        super().__init__(data, config, twinx)
+        if ylabel:
+            self._cfg["candlestick.ylabel"] = ylabel
 
     def get_width(self) -> float:
-        if self._cfg.candlestick.panel.width:
-            return self._cfg.candlestick.panel.width
-        return self._cfg.candlestick.panel.width_per_bar * self._data["dt"].size
+        return (
+            self._cfg.candlestick.panel.width
+            if self._cfg.candlestick.panel.width
+            else self._cfg.candlestick.panel.width_per_bar
+            * self._data["dt"].size
+        )
+
+    def get_ylabel(self) -> str:
+        return self._cfg.candlestick.ylabel
 
     def get_height(self) -> float:
         return self._cfg.candlestick.panel.height
@@ -36,8 +47,9 @@ class CandleStick(Artist):
         return self._data["dt"][0]
 
     def get_xmax(self) -> np.datetime64:
-        td = self._data["dt"][-1] - self._data["dt"][-2]
-        return self._data["dt"][-1] + td
+        return self._data["dt"][-1] + (
+            self._data["dt"][-1] - self._data["dt"][-2]
+        )
 
     def get_ymin(self) -> float:
         padding = self._cfg.candlestick.padding.ymin
@@ -47,10 +59,16 @@ class CandleStick(Artist):
     def get_ymax(self) -> float:
         padding = self._cfg.candlestick.padding.ymax
         delta = max(self._data["high"]) - min(self._data["low"])
-        ymax = max(self._data["high"]) + delta * padding
-        return ymax
+        return max(self._data["high"]) + delta * padding
 
-    def draw(self, axes: Axes) -> Axes:
+    def validate(self):
+        validate(
+            data=self._data,
+            data_type_mapping=self._cfg.candlestick.data.types,
+            class_name=self.__class__.__name__,
+        )
+
+    def draw(self, axes: Axes) -> None:
         b_xmin = date2num(self._data["dt"])
         b_num_td = to_num_td(self._data["dt"])
         b_open = self._data["open"]
@@ -121,6 +139,7 @@ class CandleStick(Artist):
             linewidths=self._cfg.candlestick.doji.linewidth,
             zorder=self._cfg.candlestick.zorder,
         )
+
         axes.add_artist(bodies)
         axes.add_artist(wicks)
         axes.add_artist(dojis)

@@ -1,11 +1,9 @@
-from absl.testing import parameterized
-from fintime.composites import Panel
-from fintime.composites import Subplot
-from fintime.composites import Grid
-from absl.testing import parameterized
-from fintime.artists import Artist
-from dataclasses import dataclass
 import numpy as np
+from absl.testing import parameterized
+from dataclasses import dataclass
+
+from fintime.artists import Artist
+from fintime.composites import Panel, Subplot
 
 
 @dataclass
@@ -41,6 +39,9 @@ class MockArtist(Artist):
         return self.height
 
     def draw(self, axes):
+        pass
+
+    def validate(self):
         pass
 
 
