@@ -7,8 +7,6 @@ FinTime is a financial time series plotting library built on Matplotlib.
 - Branched propagation of data and configurations to sub-components, enabling overrides at any level.
 
 
-
-
 ## Table of Contents
 
 - [Installation](#installation)
@@ -21,7 +19,6 @@ FinTime is a financial time series plotting library built on Matplotlib.
   - [Subplots Plot](#subplots-plot)
   - [Standalone Use of Artists](#standalone-use-of-artists)
 - [Configuration](#configuration)
-
 - [Upcoming Features](#upcoming-features)
 
 
@@ -252,9 +249,13 @@ for k, v in cfg.to_flat_dict().items():
 ## Upcoming Features
 - Legends
 - Custom y-tick formatting
+- Improved default spacing logic
+- Support for non-linear datetime xaxis to display OHCV data of irregular intervals
 - More artists: 
-  - trade annotations with collision control
-  - diverging bars
-  - trading session shading
+  - Trade annotations with collision control
+  - Fill between
+  - Diverging bars
+  - Trading session shading
   - and more 
+
 
