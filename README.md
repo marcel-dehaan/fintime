@@ -78,12 +78,14 @@ for feat, array in datas["10s"].items():
     print(feat.ljust(6), repr(array[:2]))
 
 # Expected output:
-# --> dt     array(['2024-03-03T21:00:00.000'], dtype='datetime64[ms]')
-# --> open   array([101.62])
-# --> high   array([101.92])
-# --> low    array([101.59])
-# --> close  array([101.6])
-# --> vol    array([2941])
+# -> dt     array(['2024-03-11T20:11:50.000', '2024-03-11T20:12:00.000'], 
+#           dtype='datetime64[ms]')
+# -> open   array([101.62, 101.62])
+# -> high   array([101.92, 101.67])
+# -> low    array([101.59, 101.5 ])
+# -> close  array([101.6 , 101.54])
+# -> vol    array([2941, 3140])
+
 ```
 
 <a id="panels-plot"></a>
@@ -143,8 +145,16 @@ Displaying multiple groups of panels within a single figure is achieved by passi
 from fieldconfig import Config
 from fintime.plot import Subplot
 from fintime.artists import Line
+import numpy as np
+
+cfg_dark = Config(create_intermediate_attributes=True)
+cfg_dark.panel.facecolor = "#36454F"
+cfg_dark.candlestick.face.relwidth = 0.9
+cfg_dark.candlestick.wick.color = "lightgray"
+cfg_dark.candlestick.wick.linewidth = 2.0
 
 datas["1s"]["sin"] = np.sin(np.linspace(0, 2 * np.pi, datas["1s"]["dt"].size))
+
 
 subplots = [
     Subplot(
@@ -191,12 +201,8 @@ fig = plot(
     title="OHLCV of Different Temporal Intervals in Their Own Subplots",
 )
 plt.show()
-
 ```
-
 ![subplots plot](https://raw.githubusercontent.com/marcel-dehaan/fintime/main/images/subplots_plot.png)
-
-
 
 
 <a id="standalone-use-of-artists"></a>
@@ -205,7 +211,6 @@ plt.show()
 You also have the option to have Artists draw on your own Axes.
 ```python
 import matplotlib.pyplot as plt
-from fintime.artists import CandleStick
 from fintime.config import get_config
 
 data = datas["30s"]
@@ -217,6 +222,7 @@ axes.set_ylim(min(data["low"]), max(data["high"]))
 cs_artist = CandleStick(data=data, config=get_config())
 cs_artist.draw(axes)
 plt.show()
+
 ```
 ![standalone plot](https://raw.githubusercontent.com/marcel-dehaan/fintime/main/images/standalone_plot.png)
 
