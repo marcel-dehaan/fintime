@@ -257,8 +257,9 @@ for k, v in cfg.to_flat_dict().items():
   - Fill between
   - Diverging bars
   - Trading session shading
+  - Table
   - and more 
   
 <a id="note-of-warning"></a>
 ## Note of Warning
-FinTime is currently in its early alpha development stage, and interfaces are subject to change without prior notice, including potential modifications that may not be backward compatible. Please be aware of this ongoing development state."
+FinTime is currently in its early alpha development stage, and interfaces are subject to change without prior notice, including potential modifications that may not be backward compatible. Please be aware of this ongoing development state.
