@@ -13,6 +13,7 @@ def plot(
     specs: list[Subplot] | list[Panel],
     data: Mapping[str, Array1D] = {},
     config: Mapping[str, Any] = None,
+    *,
     figsize: SizeSpec = (None, None),
     title: Optional[str] = None,
     save: Optional["str"] = None,
