@@ -68,8 +68,14 @@ def get_config():
     c.candlestick.zorder = 14
     c.candlestick.body.relwidth = Field(0.8, validator=between_01)
     c.candlestick.body.alpha = Field(1.0, float, validator=between_01)
-    c.candlestick.body.up_color = Field("#4EA59A", validator=valid_color)
-    c.candlestick.body.down_color = Field("#E05D57", validator=valid_color)
+    c.candlestick.body.face.color.up = Field("#4EA59A", validator=valid_color)
+    c.candlestick.body.face.color.down = Field(
+        "#E05D57", validator=valid_color
+    )
+    c.candlestick.body.edge.color.up = "black"
+    c.candlestick.body.edge.color.down = "black"
+    c.candlestick.body.edge.linewidth = 0.3
+
     c.candlestick.wick.color = Field("#000000", validator=valid_color)
     c.candlestick.wick.linewidth = 1.0
     c.candlestick.wick.alpha = Field(1.0, float, validator=between_01)

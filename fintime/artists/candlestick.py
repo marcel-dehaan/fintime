@@ -80,20 +80,20 @@ class CandleStick(Artist):
         b_ymin = np.minimum(b_open, b_close)
         b_ymax = np.maximum(b_open, b_close)
 
-        indices_with_doji = np.where(b_open == b_close)[0]
-        indices_without_doji = np.where(b_open != b_close)[0]
+        indx_w_doji = np.where(b_open == b_close)[0]
+        indx_wo_doji = np.where(b_open != b_close)[0]
 
         body_verts = get_rectangle_vertices(
-            b_xmin=b_xmin[indices_without_doji],
-            b_xmax=b_xmax[indices_without_doji],
-            b_ymin=b_ymin[indices_without_doji],
-            b_ymax=b_ymax[indices_without_doji],
+            b_xmin=b_xmin[indx_wo_doji],
+            b_xmax=b_xmax[indx_wo_doji],
+            b_ymin=b_ymin[indx_wo_doji],
+            b_ymax=b_ymax[indx_wo_doji],
         )
 
         doji_segs = get_horizontal_line_segments(
-            b_xmin=b_xmin[indices_with_doji],
-            b_xmax=b_xmax[indices_with_doji],
-            b_y=b_ymin[indices_with_doji],
+            b_xmin=b_xmin[indx_w_doji],
+            b_xmax=b_xmax[indx_w_doji],
+            b_y=b_ymin[indx_w_doji],
         )
 
         b_x = (b_xmin + b_xmax) * 0.5
@@ -113,15 +113,23 @@ class CandleStick(Artist):
 
         wick_segs = np.concatenate((upper_wick_segs, lower_wick_segs), axis=0)
 
-        facecolors = np.where(
-            b_close[indices_without_doji] >= b_open[indices_without_doji],
-            self._cfg.candlestick.body.up_color,
-            self._cfg.candlestick.body.down_color,
+        body_facecolors = np.where(
+            b_close[indx_wo_doji] >= b_open[indx_wo_doji],
+            self._cfg.candlestick.body.face.color.up,
+            self._cfg.candlestick.body.face.color.down,
+        )
+
+        body_edgecolors = np.where(
+            b_close[indx_wo_doji] >= b_open[indx_wo_doji],
+            self._cfg.candlestick.body.edge.color.up,
+            self._cfg.candlestick.body.edge.color.down,
         )
 
         bodies = PolyCollection(
             verts=body_verts,
-            facecolors=facecolors,
+            facecolors=body_facecolors,
+            edgecolors=body_edgecolors,
+            linewidth=self._cfg.candlestick.body.edge.linewidth,
             zorder=self._cfg.candlestick.zorder,
             alpha=self._cfg.candlestick.body.alpha,
         )
