@@ -139,5 +139,19 @@ def get_config():
     c.fill_between.edge.linewidth = 0.3
     c.fill_between.alpha = 0.5
 
+    # Diverging Bar
+    c.diverging_bar.panel.height = 3.0
+    c.diverging_bar.panel.width = 0.0
+    c.diverging_bar.panel.width_per_bar = 0.1
+    c.diverging_bar.panel.padding.ymin = 0.0
+    c.diverging_bar.panel.padding.ymax = 0.0
+    c.diverging_bar.panel.ylabel = Field("hi", str)
+    c.diverging_bar.face.color.up = "#BCD2E8"
+    c.diverging_bar.face.color.down = "#528AAE"
+    c.diverging_bar.edge.color.up = "#528AAE"
+    c.diverging_bar.edge.color.down = "black"
+    c.diverging_bar.alpha = 1.0
+    c.diverging_bar.relwidth = 1.0
+
     c.disable_intermediate_attribute_creation()
     return c
