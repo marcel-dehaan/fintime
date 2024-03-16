@@ -32,6 +32,12 @@ def get_config():
 
     c = Config(create_intermediate_attributes=True)
 
+    c.grid.linestyle = Field("--", validator=valid_linestyle)
+    c.grid.linewidth = Field(0.5, validator=positive_number)
+    c.grid.color = Field("black", validator=valid_color)
+    c.grid.alpha = Field(0.3, float, between_01)
+    c.grid.zorder = 0
+
     # Font settings
     c.font.family = Field("sans-serif", str, valid_font_family)
     c.font.color = Field("black", validator=valid_color)

@@ -182,7 +182,13 @@ class Subplot(Composite, XLim):
             labeltop = rowspan.start == 0
             labelbottom = rowspan.stop == nrows
             axes.set_xlim(xmin, xmax)
-            axes.grid(linestyle="-", alpha=0.5, zorder=10)
+            axes.grid(
+                linestyle=self._cfg.grid.linestyle,
+                alpha=self._cfg.grid.alpha,
+                zorder=self._cfg.grid.zorder,
+                linewidth=self._cfg.grid.linewidth,
+                color=self._cfg.grid.color,
+            )
             axes.tick_params(
                 which="both",
                 labelsize=12,
