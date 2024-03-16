@@ -50,8 +50,10 @@ def get_config():
     c.ylabel.font.size = Field(18, object, valid_font_size)
     c.ylabel.pad = 30
 
-    # Timezone and figure settings
+    # Timezone
     c.timezone = tz.gettz("America/New_York")
+
+    # Figure settings
     c.figure.layout = "tight"
     c.figure.facecolor = "#f9f9f9"
     c.figure.title.font.size = 20
@@ -59,9 +61,9 @@ def get_config():
     c.figure.title.font.family = c.font.family
     c.figure.title.y = Field(0.98, validator=between_01)
 
-    # Panel and X-axis settings
+    # Panel settings
     c.panel.facecolor = "white"
-    c.xaxis.tick.nudge = 0
+    c.panel.xaxis.tick.nudge = 0
 
     # Candlestick settings
     c.candlestick.panel.height = Field(9.0, validator=positive_number)
@@ -129,6 +131,7 @@ def get_config():
     c.line.padding.ymin = Field(0.06, float, positive_number)
     c.line.padding.ymax = Field(0.06, float, positive_number)
 
+    # FillBetween settings
     c.fill_between.panel.height = 2
     c.fill_between.panel.width = 3
     c.fill_between.panel.padding.ymin = 0.06
@@ -139,7 +142,7 @@ def get_config():
     c.fill_between.edge.linewidth = 0.3
     c.fill_between.alpha = 0.5
 
-    # Diverging Bar
+    # DivergingBar settings
     c.diverging_bar.panel.height = 3.0
     c.diverging_bar.panel.width = 0.0
     c.diverging_bar.panel.width_per_bar = 0.1

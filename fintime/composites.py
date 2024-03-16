@@ -164,7 +164,7 @@ class Subplot(Composite, XLim):
             x_min=xmin,
             x_max=xmax,
             width=self.get_width(),
-            nudge=self._cfg.xaxis.tick.nudge,
+            nudge=self._cfg.panel.xaxis.tick.nudge,
             tz=self._cfg.timezone,
         )
         if isinstance(xmin, np.datetime64):
