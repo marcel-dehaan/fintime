@@ -132,5 +132,15 @@ def get_config():
     c.line.padding.ymin = Field(0.06, float, positive_number)
     c.line.padding.ymax = Field(0.06, float, positive_number)
 
+    c.fill_between.panel.height = 2
+    c.fill_between.panel.width = 3
+    c.fill_between.panel.padding.ymin = 0.06
+    c.fill_between.panel.padding.ymax = 0.06
+    c.fill_between.panel.ylabel = Field(None, str)
+    c.fill_between.face.color = "#BCD2E8"
+    c.fill_between.edge.color = "#528AAE"
+    c.fill_between.edge.linewidth = 0.3
+    c.fill_between.alpha = 0.5
+
     c.disable_intermediate_attribute_creation()
     return c
