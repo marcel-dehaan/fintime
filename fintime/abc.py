@@ -122,6 +122,14 @@ class Artist(Sized, XLim, YLim):
         """Get the ylabel of the artist."""
         return None
 
+    def set_ylim(self, ymin, ymax):
+        self._ymin = ymin
+        self._ymax = ymax
+
+    def set_xlim(self, xmin, xmax):
+        self._xmin = xmin
+        self._xmax = xmax
+
     def propagate_data(self, data: Mapping[str, Any]) -> None:
         """Propagate data updates to the artist."""
         self._update_data(data=data)

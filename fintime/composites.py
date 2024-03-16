@@ -70,20 +70,23 @@ class Panel(Composite, XLim, YLim):
             ]
         )
 
+    def set_xlim(self, xmin, xmax):
+        self._xmin = xmin
+        self._xmax = xmax
+
     def draw(self, axes: Axes) -> None:
 
         axes.set_facecolor(self._cfg.panel.facecolor)
         all_axes = {False: axes}
         if any([artist.is_twinx() for artist in self._artists]):
             all_axes[True] = axes.twinx()
-
         else:
             axes.yaxis.set_tick_params(right=True, labelright=True)
 
         for twinx, axes in all_axes.items():
-            all_axes[twinx].set_ylim(
-                self.get_ymin(twinx), self.get_ymax(twinx)
-            )
+            ylim = (self.get_ymin(twinx), self.get_ymax(twinx))
+
+            all_axes[twinx].set_ylim(*ylim)
             all_axes[twinx].set_ylabel(
                 self.get_ylabel(twinx),
                 fontdict={
@@ -96,7 +99,10 @@ class Panel(Composite, XLim, YLim):
             )
 
         for artist in self._artists:
-            artist.draw(all_axes[artist.is_twinx()])
+            twinx = artist.is_twinx()
+            artist.set_ylim(self.get_ymin(twinx), self.get_ymax(twinx))
+            artist.set_xlim(self._xmin, self._xmax)
+            artist.draw(all_axes[twinx])
 
 
 class Subplot(Composite, XLim):
@@ -189,6 +195,8 @@ class Subplot(Composite, XLim):
             )
             axes.xaxis.set_major_locator(locator=locator)
             axes.xaxis.set_major_formatter(formatter=formatter)
+            panel.set_xlim(xmin, xmax)
+
             panel.draw(axes)
 
         # enforce x-axis panel alignment when interatively viewed.
