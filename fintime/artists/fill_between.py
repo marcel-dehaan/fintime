@@ -5,13 +5,13 @@ from matplotlib.axes import Axes
 from matplotlib.dates import date2num
 
 from fintime.abc import Artist
-from fintime.types import Fill
+from fintime.types import NumberArray1D
 
 
 class FillBetween(Artist):
     def __init__(
         self,
-        data: Optional[Fill] = None,
+        data: Optional[Mapping[str, NumberArray1D]] = None,
         config: Optional[Mapping[str, Any]] = None,
         *,
         y1_feat: Optional[str] = None,
