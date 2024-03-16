@@ -80,7 +80,7 @@ def get_config():
     )
     c.candlestick.body.edge.color.up = "black"
     c.candlestick.body.edge.color.down = "black"
-    c.candlestick.body.edge.linewidth = 0.3
+    c.candlestick.body.edge.linewidth = 0.2
 
     c.candlestick.wick.color = Field("#000000", validator=valid_color)
     c.candlestick.wick.linewidth = 1.0
@@ -103,9 +103,8 @@ def get_config():
     c.volume.panel.height = Field(3.0, validator=positive_number)
     c.volume.panel.width = Field(None, ftype=float)
     c.volume.panel.width_per_bar = 0.1
-
+    c.volume.panel.ylabel = "volume"
     c.volume.padding.ymax = Field(0.05, validator=positive_number)
-    c.volume.ylabel = "volume"
     c.volume.data.types = [
         ("dt", DatetimeArray1D),
         ("vol", NumberArray1D),
@@ -114,12 +113,10 @@ def get_config():
     c.volume.face.color.up = Field("#62b2a5", validator=valid_color)
     c.volume.face.color.down = Field("#EC7063", validator=valid_color)
     c.volume.face.color.flat = Field("#a6a6a6", validator=valid_color)
-    c.volume.edge.alpha = Field(1.0, float, between_01)
-
-    c.volume.edge.linewidth = Field(0.5, float, positive_number)
-    c.volume.edge.color.up = Field("#4EA59A", validator=valid_color)
-    c.volume.edge.color.down = Field("#E05D57", validator=valid_color)
-    c.volume.edge.color.flat = Field("#9c9c9c", validator=valid_color)
+    c.volume.edge.linewidth = Field(0.2, float, positive_number)
+    c.volume.edge.color.up = Field("black", validator=valid_color)
+    c.volume.edge.color.down = Field("black", validator=valid_color)
+    c.volume.edge.color.flat = Field("black", validator=valid_color)
 
     # Line settings
     c.line.zorder = 8

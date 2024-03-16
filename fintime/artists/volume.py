@@ -2,17 +2,12 @@ from typing import Any, Mapping, Optional
 
 import numpy as np
 from matplotlib.axes import Axes
-from matplotlib.collections import LineCollection, PolyCollection
+from matplotlib.collections import PolyCollection
 from matplotlib.dates import date2num
 
 from fintime.abc import Artist
 from fintime.types import Volume
-from fintime.artists.utils import (
-    get_horizontal_line_segments,
-    get_rectangle_vertices,
-    get_vertical_line_segments,
-    to_num_td,
-)
+from fintime.artists.utils import get_rectangle_vertices, to_num_td
 from fintime.validation import validate
 
 
@@ -37,7 +32,7 @@ class Volume(Artist):
         )
 
     def get_ylabel(self) -> str:
-        return self._cfg.volume.ylabel
+        return self._cfg.volume.panel.ylabel
 
     def get_height(self) -> float:
         return self._cfg.volume.panel.height
@@ -74,75 +69,35 @@ class Volume(Artist):
         b_ymin = np.zeros_like(b_vol)
         b_ymax = b_vol
 
-        indices_with_volume = np.where(b_ymax)[0]
+        indx_w_vol = np.where(b_ymax)[0]
 
         face_verts = get_rectangle_vertices(
-            b_xmin=b_xmin[indices_with_volume],
-            b_xmax=b_xmax[indices_with_volume],
-            b_ymin=b_ymin[indices_with_volume],
-            b_ymax=b_ymax[indices_with_volume],
+            b_xmin=b_xmin[indx_w_vol],
+            b_xmax=b_xmax[indx_w_vol],
+            b_ymin=b_ymin[indx_w_vol],
+            b_ymax=b_ymax[indx_w_vol],
         )
 
-        price_diff = b_close - b_close_last
-        c_up = np.where(price_diff > 0, self._cfg.volume.face.color.up, "")
-        c_down = np.where(
-            price_diff < 0, self._cfg.volume.face.color.down, ""
-        )
-        c_flat = np.where(
-            price_diff == 0, self._cfg.volume.face.color.flat, ""
-        )
+        p_diff = b_close - b_close_last
+        c_up = np.where(p_diff > 0, self._cfg.volume.face.color.up, "")
+        c_down = np.where(p_diff < 0, self._cfg.volume.face.color.down, "")
+        c_flat = np.where(p_diff == 0, self._cfg.volume.face.color.flat, "")
         facecolors = np.char.add(np.char.add(c_up, c_down), c_flat)
         facecolors[0] = self._cfg.volume.face.color.flat
+
+        c_up = np.where(p_diff > 0, self._cfg.volume.edge.color.up, "")
+        c_down = np.where(p_diff < 0, self._cfg.volume.edge.color.down, "")
+        c_flat = np.where(p_diff == 0, self._cfg.volume.edge.color.flat, "")
+        edgecolors = np.char.add(np.char.add(c_up, c_down), c_flat)
+        edgecolors[0] = self._cfg.volume.edge.color.flat
 
         faces = PolyCollection(
             verts=face_verts,
             facecolors=facecolors,
+            edgecolors=edgecolors,
+            linewidth=self._cfg.volume.edge.linewidth,
             zorder=self._cfg.volume.zorder,
             alpha=self._cfg.volume.face.alpha,
         )
         axes.add_artist(faces)
-
-        # Don't waste compute cycles drawing non-visible edges.
-        if self._cfg.volume.edge.linewidth and self._cfg.volume.edge.alpha:
-
-            segs0 = get_vertical_line_segments(
-                b_x=b_xmin[indices_with_volume],
-                b_ymin=b_ymin[indices_with_volume],
-                b_ymax=b_ymax[indices_with_volume],
-            )
-
-            segs1 = get_vertical_line_segments(
-                b_x=b_xmax[indices_with_volume],
-                b_ymin=b_ymin[indices_with_volume],
-                b_ymax=b_ymax[indices_with_volume],
-            )
-            segs2 = get_horizontal_line_segments(
-                b_xmin=b_xmin[indices_with_volume],
-                b_xmax=b_xmax[indices_with_volume],
-                b_y=b_ymax[indices_with_volume],
-            )
-            c_up = np.where(
-                price_diff > 0, self._cfg.volume.edge.color.up, ""
-            )
-            c_down = np.where(
-                price_diff < 0, self._cfg.volume.edge.color.down, ""
-            )
-            c_flat = np.where(
-                price_diff == 0, self._cfg.volume.edge.color.flat, ""
-            )
-            edgecolors = np.char.add(np.char.add(c_up, c_down), c_flat)
-            edgecolors[0] = self._cfg.volume.edge.color.flat
-
-            for segs in [segs0, segs1, segs2]:
-                edges = LineCollection(
-                    segments=segs,
-                    colors=edgecolors,
-                    linewidths=self._cfg.volume.edge.linewidth,
-                    zorder=self._cfg.volume.zorder,
-                    alpha=self._cfg.volume.edge.alpha,
-                    capstyle=None,
-                )
-
-                axes.add_artist(edges)
-
         return axes
