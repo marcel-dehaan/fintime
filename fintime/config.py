@@ -43,11 +43,15 @@ def get_config():
     c.font.color = Field("black", validator=valid_color)
     c.font.weight = Field(300, object, valid_font_weight)
 
+    # X-axis label settings
+    c.xlabel.color = "black"
+
     # Y-axis label settings
     c.ylabel.font.family = Field(c.font.family, str, valid_font_family)
     c.ylabel.font.color = Field(c.font.color, validator=valid_color)
     c.ylabel.font.weight = Field(c.font.weight, object, valid_font_weight)
     c.ylabel.font.size = Field(18, object, valid_font_size)
+    c.ylabel.color = "black"
     c.ylabel.pad = 30
 
     # Timezone
@@ -60,10 +64,12 @@ def get_config():
     c.figure.title.font.weight = "bold"
     c.figure.title.font.family = c.font.family
     c.figure.title.y = Field(0.98, validator=between_01)
+    c.figure.title.color = "black"
 
     # Panel settings
     c.panel.facecolor = "white"
     c.panel.xaxis.tick.nudge = 0
+    c.panel.spine.color = "black"
 
     # Candlestick settings
     c.candlestick.panel.height = Field(9.0, validator=positive_number)

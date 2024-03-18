@@ -208,6 +208,11 @@ class Subplot(Composite, XLim):
             )
             axes.xaxis.set_major_locator(locator=locator)
             axes.xaxis.set_major_formatter(formatter=formatter)
+            axes.tick_params(axis="x", colors=self._cfg.xlabel.color)
+            axes.tick_params(axis="y", colors=self._cfg.ylabel.color)
+
+            for spine in axes.spines.values():
+                spine.set_color(self._cfg.panel.spine.color)
             panel.set_xlim(xmin, xmax)
 
             panel.draw(axes)

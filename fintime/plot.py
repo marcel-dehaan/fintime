@@ -66,6 +66,7 @@ def plot(
     if title:
         fig.suptitle(
             title,
+            color=config.figure.title.color,
             fontfamily=config.figure.title.font.family,
             fontsize=config.figure.title.font.size,
             fontweight=config.figure.title.font.weight,
