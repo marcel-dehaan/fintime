@@ -37,10 +37,6 @@ def plot(
 
     Returns:
     - Optional[Figure]: The Figure instance if rtn is True, else None.
-
-    Note:
-    - Configurations and data are propagated downward to subcomponents, allowing
-    for overrides at any level.
     """
 
     if config is None:
