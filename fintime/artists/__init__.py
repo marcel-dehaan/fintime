@@ -4,6 +4,8 @@ from fintime.artists.line import Line
 from fintime.artists.volume import Volume
 from fintime.artists.fill_between import FillBetween
 from fintime.artists.diverging_bar import DivergingBar
+from fintime.artists.trade_annotation import TradeAnnotation
+
 
 __all__ = (
     "CandleStick",
@@ -12,4 +14,5 @@ __all__ = (
     "Artist",
     "FillBetween",
     "DivergingBar",
+    "TradeAnnotation",
 )

@@ -35,6 +35,10 @@ def valid_font_weight(x):
     return False
 
 
+def valid_vside(x):
+    return x in {"top", "bottom"}
+
+
 def valid_font_size(x):
     if isinstance(x, (int, float)):
         return x > 0 and x < 100

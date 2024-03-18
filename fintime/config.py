@@ -3,9 +3,13 @@ from matplotlib.pyplot import rcParams
 
 from fieldconfig import Config, Field
 from fintime.types import (
+    Number,
+    Floating,
+    Side,
     FloatingArray1D,
     DatetimeArray1D,
     NumberArray1D,
+    StringArray1D,
 )
 from fintime.validation import (
     valid_font_family,
@@ -13,9 +17,14 @@ from fintime.validation import (
     valid_font_weight,
     valid_color,
     valid_linestyle,
+    valid_vside,
     between_01,
     positive_number,
 )
+
+
+def get_trade_annotation(price: Floating, size: Number, side: Side) -> str:
+    return f"{'-' if side in {'sell', 'sell_short'} else ''}{int(size)} @ {price}"
 
 
 def get_config():
@@ -162,5 +171,67 @@ def get_config():
     c.diverging_bar.alpha = 1.0
     c.diverging_bar.relwidth = 1.0
 
+    c.trade_annotation.panel.ylabel = Field(None, str)
+    c.trade_annotation.panel.width = 5.0
+    c.trade_annotation.panel.height = 3.0
+
+    c.trade_annotation.arrow.headlength = 6
+    c.trade_annotation.arrow.width = 0.1
+    c.trade_annotation.arrow.headwidth = 4
+
+    c.trade_annotation.arrow.face.color.buy = Field(
+        "black", object, valid_color
+    )
+    c.trade_annotation.arrow.face.color.sell = Field(
+        "black", object, valid_color
+    )
+
+    c.trade_annotation.arrow.edge.color.buy = Field(
+        "black", object, valid_color
+    )
+    c.trade_annotation.arrow.edge.color.sell = Field(
+        "black", object, valid_color
+    )
+    c.trade_annotation.arrow.edge.linewidth = Field(
+        1.0, validator=positive_number
+    )
+
+    c.trade_annotation.text.bbox.boxstyle = "round"
+    c.trade_annotation.text.bbox.alpha = 1.0
+    c.trade_annotation.text.bbox.face.color.buy = Field(
+        "#4EA59A", object, valid_color
+    )
+    c.trade_annotation.text.bbox.face.color.sell = Field(
+        "#E05D57", object, valid_color
+    )
+    c.trade_annotation.text.bbox.edge.linewidth = 1.0
+    c.trade_annotation.text.bbox.edge.color.buy = Field(
+        "black", object, valid_color
+    )
+    c.trade_annotation.text.bbox.edge.color.sell = Field(
+        "black", object, valid_color
+    )
+
+    c.trade_annotation.text.color = Field("white", object, valid_color)
+    c.trade_annotation.text.font.family = Field(
+        "monospace", validator=valid_font_family
+    )
+    c.trade_annotation.text.font.weigth = Field(
+        "bold", validator=valid_font_weight
+    )
+    c.trade_annotation.text.font.size = Field(12, validator=valid_font_size)
+
+    c.trade_annotation.vside.buy = Field("top", validator=valid_vside)
+    c.trade_annotation.vside.sell = Field("top", validator=valid_vside)
+
+    c.trade_annotation.fn_annotation = get_trade_annotation
+    c.trade_annotation.sell.textbox_color = "#cd1e1b"
+
+    c.trade_annotation.data.types = [
+        ("dt", DatetimeArray1D),
+        ("price", NumberArray1D),
+        ("size", NumberArray1D),
+        ("side", StringArray1D),
+    ]
     c.disable_intermediate_attribute_creation()
     return c
