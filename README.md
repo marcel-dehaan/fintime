@@ -10,7 +10,7 @@ FinTime is a financial time series plotting library built on Matplotlib.
 ## Table of Contents
 
 - [Installation](#installation)
-- [The plot function](#the-plot-function)
+- [The Plot Function](#the-plot-function)
   - [Terminology](#terminology)
   - [Flow](#flow)
 - [Usage](#sage)
@@ -50,11 +50,11 @@ The flow of the plot function unfolds in the following sequential steps:
 
 2. **Config and Data Propagation:** Configurations and data flow down the hierarchical structure, enabling components to incorporate local changes received during instantiation. Fintime's configuration object (`fieldconfig.Config`) ensures the correctness of configuration settings, triggering exceptions for any invalid values.
 
-3. **Data Validation:** Following the consolidation of final data and configurations across components, a data validation step ensures that all components are prepared for successful rendering later on.
+3. **Data Validation:** Following the merging of data and configurations across components, a data validation step ensures that all components are prepared for successful rendering later on.
 
 4. **Component Sizing:** The sizing of components is intricately tied to the hierarchical structure. While artists can employ dynamic sizing with best-effort defaults, each component provides a `size` argument, granting it precedence over any dynamic settings. Sizing information is propagated upward in the hierarchical structure, and whenever fixed sizing is specified, it takes precedence. In such cases, the dimensions of components are determined based on their size ratios.
 
-5. **Finalize Sizing:** Conclusive sizing information is computed and cascaded down through the components, communicating their ultimate dimensions. This information is used to enhance the final appearance of the plot, influencing aspects like tick densities, line widths, and more.
+5. **Finalize Sizing:** Conclusive sizing information is computed and cascaded down through the components, communicating their final dimensions. This information is used to enhance the final appearance of the plot, influencing aspects like tick densities, line widths, and more.
 
 6. **Drawing:** In the final stage, cascading down the hierarchical structure once more, each container invokes the `draw` method of its components, instantiating actual Matplotlib objects along the way. Artists then draw onto Axes, completing the visualization process.
 
