@@ -98,7 +98,7 @@ class Panel(Composite, XLim, YLim):
                 self.get_ylabel(twinx),
                 fontdict={
                     "family": self._cfg.ylabel.font.family,
-                    "color": self._cfg.ylabel.font.color,
+                    "color": self._cfg.ylabel.color,
                     "weight": self._cfg.ylabel.font.weight,
                     "size": self._cfg.ylabel.font.size,
                 },
