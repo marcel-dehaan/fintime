@@ -1,4 +1,6 @@
+from matplotlib.pylab import rand
 import numpy as np
+import random
 
 
 def generate_random_trade_ticks(
@@ -83,32 +85,28 @@ def to_timebar(ticks, span: int, n_bars: int = 200):
     }
 
 
-# tt = generate_random_ticks()
-# y = to_timebar(1, trade_ticks=tt)
-# # %%
-# def gen_tick_data(
-#     start: np.datetime64,
-#     td: np.timedelta64,
-#     initial_price=100,
-#     vollatilty=8,
-#     liquidity=10,
-#     seed=None,
-# ):
-#     np.random.seed(seed)
-#     n_ticks = int(np.random.random() * 10000)
-#     dt_arange = np.arange(start, start + td, dtype="datetime64[ms]")
-#     dts = np.random.choice(dt_arange, size=n_ticks, replace=False)
-#     dts = np.sort(dts)
-#     drift_values = np.random.normal(loc=0, scale=0.001, size=n_ticks)
-#     cumulative_drift = np.cumsum(drift_values)
-#     prices = initial_price * np.exp(cumulative_drift)
-#     sizes = np.random.randint(0, 100, size=prices.size) * 1000
-#     ticks = {"dt": dts, "price": prices, "size": sizes}
+def add_random_trades(data, n_trades, seed=1):
+    random.seed(seed)
+    n = data["dt"].size
+    indx = random.sample(range(n), n_trades)
 
-#     return ticks
+    data["price"] = np.zeros_like(data["close"])
+    data["side"] = np.empty(n, object)
+    data["size"] = np.zeros_like(data["close"])
+
+    for i in indx:
+        data["price"][i] = round(
+            np.random.uniform(data["low"][i], data["high"][i]), 2
+        )
+        data["side"][i] = np.random.choice(["buy", "sell"])
+        data["size"][i] = np.random.randint(1, 10) * 10
 
 
-# tick_data = gen_tick_data(np.datetime64("now"), np.timedelta64(1, "h"))
+def add_random_imb(data):
+    data["imb"] = np.random.uniform(-1, 1, data["dt"].size)
 
 
-# def to_timebar(ticks, span: int): ...
+def add_moving_average(data, n):
+    moving_avg = np.convolve(data["close"], np.ones(n), "valid") / n
+    moving_avg = np.concatenate(([np.nan] * (n - 1), moving_avg))
+    data[f"ma{n}"] = moving_avg

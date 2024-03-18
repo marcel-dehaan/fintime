@@ -67,25 +67,38 @@ The flow of the plot function unfolds in the following sequential steps:
 FinTime expects data to be structured as a flat mapping, such as a dictionary, containing NumPy arrays. The example below demonstrates the generation of mock OHLCV data with intervals of 1, 10, 30, and 300 seconds. This data will be used in the following examples.
 
 ```python
-from fintime.mock.data import generate_random_trade_ticks
+from fintime.mock.data import (
+    generate_random_trade_ticks,
+    add_random_trades,
+    add_random_imb,
+    add_moving_average,
+)
 from fintime.mock.data import to_timebar
 
+spans = [1, 10, 30, 300]
 ticks = generate_random_trade_ticks(seed=1)
-datas = {f"{span}s": to_timebar(ticks, span=span) for span in [1, 10, 30, 300]}
+datas = {f"{span}s": to_timebar(ticks, span=span) for span in spans}
 
-# inspect the data
+for span in spans:
+    data = datas[f"{span}s"]
+    add_random_imb(data)
+    add_random_trades(data, 10)
+    add_moving_average(data, 20)
+
 for feat, array in datas["10s"].items():
     print(feat.ljust(6), repr(array[:2]))
 
-# Expected output:
-# -> dt     array(['2024-03-11T20:11:50.000', '2024-03-11T20:12:00.000'], 
-#           dtype='datetime64[ms]')
-# -> open   array([101.62, 101.62])
-# -> high   array([101.92, 101.67])
-# -> low    array([101.59, 101.5 ])
-# -> close  array([101.6 , 101.54])
-# -> vol    array([2941, 3140])
-
+# --> dt     array(['2024-03-18T16:43:10.000', '2024-03-18T16:43:20.000'], dtype='datetime64[ms]')
+# --> open   array([101.61, 101.61])
+# --> high   array([101.76, 101.92])
+# --> low    array([101.54, 101.57])
+# --> close  array([101.61, 101.57])
+# --> vol    array([2824, 2749])
+# --> imb    array([ 0.41030182, -0.44632449])
+# --> price  array([0., 0.])
+# --> side   array([None, None], dtype=object)
+# --> size   array([0., 0.])
+# --> ma20   array([nan, nan])
 ```
 
 <a id="panels-plot"></a>
@@ -94,17 +107,34 @@ Let's proceed and plot candlesticks and volume bars with a 10-second span.
 ```python
 from matplotlib.pylab import plt
 from fintime.plot import plot, Panel
-from fintime.artists import CandleStick, Volume
+from fintime.artists import (
+    CandleStick,
+    Volume,
+    DivergingBar,
+    FillBetween,
+    TradeAnnotation,
+    Line,
+)
+
 
 fig = plot(
     specs=[
-        Panel(artists=[CandleStick()]),
+        Panel(
+            artists=[
+                CandleStick(),
+                FillBetween(y1_feat="low", y2_feat="high"),
+                TradeAnnotation(),
+                Line(yfeat="ma20"),
+            ]
+        ),
         Panel(artists=[Volume()]),
+        Panel(artists=[DivergingBar(feat="imb")]),
     ],
     data=datas["10s"],
     title="Candlestick & Volume Plotted in Separate Panels",
 )
 plt.show()
+
 ```
 ![panels plot](https://raw.githubusercontent.com/marcel-dehaan/fintime/main/images/panels_plot.png)
 
@@ -142,18 +172,29 @@ plt.show()
 Displaying multiple groups of panels within a single figure is achieved by passing a list of Subplots (rather than Panels) to the plot function. In the following example, we will draw candlestick and volume bars with spans of 1, 30 and 300 seconds while overriding some configurations.  
 
 ```python
-from fieldconfig import Config
 from fintime.plot import Subplot
-from fintime.artists import Line
-import numpy as np
+from fintime.config import get_config
 
-cfg_dark = Config(create_intermediate_attributes=True)
-cfg_dark.panel.facecolor = "#36454F"
-cfg_dark.candlestick.face.relwidth = 0.9
-cfg_dark.candlestick.wick.color = "lightgray"
-cfg_dark.candlestick.wick.linewidth = 2.0
-
-datas["1s"]["sin"] = np.sin(np.linspace(0, 2 * np.pi, datas["1s"]["dt"].size))
+config = get_config()
+config.figure.facecolor = "#131722"
+config.figure.title.color = "lightgray"
+config.panel.facecolor = "#042530"
+config.panel.spine.color = config.panel.facecolor
+config.grid.color = "lightgray"
+config.xlabel.color = "lightgray"
+config.ylabel.color = "lightgray"
+config.candlestick.body.face.color.up = "#53b987"
+config.candlestick.body.face.color.down = "#eb4d5c"
+config.candlestick.wick.color = "lightgray"
+config.candlestick.doji.color = "lightgray"
+config.volume.face.color.up = "#53b987"
+config.volume.face.color.down = "#eb4d5c"
+config.fill_between.alpha = 0.2
+config.trade_annotation.text.bbox.edge.linewidth = 0.5
+for side in ["buy", "sell"]:
+    config.trade_annotation.arrow.edge.color[side] = "lightgray"
+    config.trade_annotation.arrow.face.color[side] = "lightgray"
+    config.trade_annotation.text.bbox.edge.color[side] = "lightgray"
 
 
 subplots = [
@@ -162,24 +203,22 @@ subplots = [
             Panel(
                 artists=[
                     CandleStick(data=datas["1s"]),
-                    Line(
-                        data=datas["1s"],
-                        yfeat="sin",
-                        ylabel="sine wave",
-                        twinx=True,
-                    ),
+                    TradeAnnotation(data=datas["1s"]),
+                    Line(data=datas["1s"], yfeat="ma20"),
                 ]
             ),
             Panel(artists=[Volume(data=datas["1s"])]),
+            Panel(artists=[DivergingBar(data=datas["1s"], feat="imb")]),
         ]
     ),
     Subplot(
         [
             Panel(
                 artists=[
-                    CandleStick(
-                        config={"candlestick.body.up_color": "black"}
-                    ),
+                    TradeAnnotation(),
+                    CandleStick(),
+                    Line(yfeat="ma20"),
+                    FillBetween(y1_feat="low", y2_feat="high"),
                 ]
             ),
             Panel(artists=[Volume()]),
@@ -188,17 +227,25 @@ subplots = [
     ),
     Subplot(
         [
-            Panel(artists=[CandleStick()]),
+            Panel(
+                artists=[
+                    CandleStick(
+                        config={"candlestick.body.face.color.up": "#2c7a99"}
+                    ),
+                    TradeAnnotation(),
+                    Line(yfeat="ma20"),
+                ]
+            ),
             Panel(artists=[Volume()]),
         ],
         data=datas["300s"],
-        config=cfg_dark,
     ),
 ]
 
 fig = plot(
     subplots,
     title="OHLCV of Different Temporal Intervals in Their Own Subplots",
+    config=config,
 )
 plt.show()
 ```
@@ -259,9 +306,6 @@ for k, v in cfg.to_flat_dict().items():
 - Improved default spacing logic
 - Support for non-linear datetime xaxis to display OHCV data of irregular intervals
 - More artists: 
-  - Trade annotations with collision control
-  - Fill between
-  - Diverging bars
   - Trading session shading
   - Table
   - and more 
