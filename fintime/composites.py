@@ -74,6 +74,13 @@ class Panel(Composite, XLim, YLim):
         self._xmin = xmin
         self._xmax = xmax
 
+    def propagate_size(self, width: float, height: float) -> None:
+        """Propagate size updates to the composite and its components."""
+        self._set_size(width=width, height=height)
+
+        for comp in self._components:
+            comp.propagate_size(width, height)
+
     def draw(self, axes: Axes) -> None:
 
         axes.set_facecolor(self._cfg.panel.facecolor)
