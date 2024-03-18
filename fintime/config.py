@@ -154,11 +154,11 @@ def get_config():
     c.diverging_bar.panel.width_per_bar = 0.1
     c.diverging_bar.panel.padding.ymin = 0.0
     c.diverging_bar.panel.padding.ymax = 0.0
-    c.diverging_bar.panel.ylabel = Field("hi", str)
-    c.diverging_bar.face.color.up = "#BCD2E8"
-    c.diverging_bar.face.color.down = "#528AAE"
-    c.diverging_bar.edge.color.up = "#528AAE"
-    c.diverging_bar.edge.color.down = "black"
+    c.diverging_bar.panel.ylabel = Field(None, str)
+    c.diverging_bar.face.color.up = Field("#BCD2E8", object, valid_color)
+    c.diverging_bar.face.color.down = Field("#528AAE", object, valid_color)
+    c.diverging_bar.edge.color.up = Field("#528AAE", object, valid_color)
+    c.diverging_bar.edge.color.down = Field("black", object, valid_color)
     c.diverging_bar.alpha = 1.0
     c.diverging_bar.relwidth = 1.0
 
