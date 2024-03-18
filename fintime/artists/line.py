@@ -40,7 +40,7 @@ class Line(Artist):
         )
 
     def get_ylabel(self) -> str:
-        return self._ylabel if self._ylabel else self._yfeat
+        return self._ylabel
 
     def get_height(self) -> float:
         return self._cfg.line.panel.height
