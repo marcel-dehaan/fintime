@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "fintime"
-version = "0.1.4"
+version = "0.1.5"
 description = "Financial Time Series Plotting Libarary"
 license = "Apache-2.0"
 authors = ["Marcel de Haan <mdehaan35@gmail.com>"]
