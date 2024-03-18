@@ -62,7 +62,7 @@ class DivergingBar(Artist):
         )
 
     def get_ylabel(self) -> str:
-        return self._cfg.diverging_bar.panel.ylabel
+        return self._cfg.diverging_bar.panel.ylabel or self._feat
 
     def validate(self):
         check_key_presence(self._feat, self._data, self.__class__.__name__)
