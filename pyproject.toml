@@ -16,7 +16,7 @@ classifiers = [
 [tool.poetry.dependencies]
 python = "^3.7"
 PyYAML = "*"
-matplotlib = "3.0"
+matplotlib = "^3.0"
 nptyping = "*"
 python-dateutil = "*"
 numpy = "*"
